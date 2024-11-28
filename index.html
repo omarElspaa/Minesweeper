@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minesweeper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="static">
+    <div class="controls-container">
+        <img src="smile-wink.svg" alt="">
+        <!-- Game size button under the smile-wink image -->
+        <button id="gameSize" class="game-size-btn">9x9</button>
+    </div> 
+    <div class="options">
+        <h1>Minesweeper</h1>
+        <div class="controls">
+          <button id="restart">Restart Game</button>
+        </div>
+    </div>
+  </div>
+  <div class="black">
+    <div class="board" id="board"></div>  
+    <!-- Overlay for win/lose message -->
+    <div id="overlay" class="overlay"></div>      
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
