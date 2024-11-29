@@ -23,6 +23,7 @@ h1 {
   padding: 10px;
 }
 .static {
+    width: 100%;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -62,6 +63,9 @@ h1 {
   font-weight: bold;
   cursor: pointer;
   user-select: none;
+}
+.cell:not(.revealed, .mine, .flag):hover {
+  background-color: #aaa;
 }
 .cell-small {
     font-size: 14px;

@@ -5,17 +5,54 @@ let mines = 10;
 const boardElement = document.getElementById('board');
 const restartButton = document.getElementById('restart');
 const gameSizeButton = document.getElementById('gameSize');
-const overlay = document.getElementById('overlay');  // The overlay element
+const overlay = document.getElementById('overlay'); // The overlay element
 let board = [];
 let gameOver = false;
 let firstClick = true;
 let gameSizes = [
   { rows: 9, cols: 9, mines: 10 },
   { rows: 16, cols: 16, mines: 40 },
-  { rows: 22, cols: 22, mines: 99 }
+  { rows: 22, cols: 22, mines: 99 },
 ];
 let currentSizeIndex = 0;
 
+// Save game state
+function saveGameState() {
+  const gameState = {
+    board,
+    rows,
+    cols,
+    mines,
+    firstClick,
+    gameOver,
+    currentSizeIndex,
+  };
+  chrome.storage.local.set({ gameState }, () => {
+    console.log('Game state saved.');
+  });
+}
+
+// Load game state
+function loadGameState() {
+  chrome.storage.local.get('gameState', (data) => {
+    if (data.gameState) {
+      const savedState = data.gameState;
+      board = savedState.board;
+      rows = savedState.rows;
+      cols = savedState.cols;
+      mines = savedState.mines;
+      firstClick = savedState.firstClick;
+      gameOver = savedState.gameOver;
+      currentSizeIndex = savedState.currentSizeIndex;
+      renderBoard();
+      console.log('Game state loaded.');
+    } else {
+      createBoard();
+    }
+  });
+}
+
+// Create a new board
 function createBoard() {
   const size = gameSizes[currentSizeIndex];
   rows = size.rows;
@@ -32,16 +69,19 @@ function createBoard() {
         flagged: false,
       }))
     );
+
   renderBoard();
   hideOverlay(); // Hide the overlay when creating a new board
+  saveGameState(); // Save the initial board state
 }
 
+// Place mines, avoiding the first click
 function placeMines(excludedRow, excludedCol) {
   let placed = 0;
   while (placed < mines) {
     const row = Math.floor(Math.random() * rows);
     const col = Math.floor(Math.random() * cols);
-    const distant = (Math.abs(row - excludedRow) > 1) || (Math.abs(col - excludedCol) > 1);
+    const distant = Math.abs(row - excludedRow) > 1 || Math.abs(col - excludedCol) > 1;
     if (!board[row][col].mine && distant) {
       board[row][col].mine = true;
       placed++;
@@ -50,6 +90,7 @@ function placeMines(excludedRow, excludedCol) {
   calculateAdjacentMines();
 }
 
+// Calculate adjacent mines for each cell
 function calculateAdjacentMines() {
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -69,6 +110,7 @@ function calculateAdjacentMines() {
   }
 }
 
+// Render the board
 function renderBoard() {
   boardElement.innerHTML = '';
   boardElement.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
@@ -81,14 +123,14 @@ function renderBoard() {
       cellElement.className = 'cell';
       switch (cols) {
         case 9:
-            cellElement.classList.add('cell-small'); 
-            break;
+          cellElement.classList.add('cell-small');
+          break;
         case 16:
-            cellElement.classList.add('cell-medium');
-            break;
+          cellElement.classList.add('cell-medium');
+          break;
         case 22:
-            cellElement.classList.add('cell-big'); 
-            break;
+          cellElement.classList.add('cell-big');
+          break;
       }
 
       if (cell.revealed) {
@@ -115,6 +157,7 @@ function renderBoard() {
   }
 }
 
+// Handle cell click
 function handleCellClick(row, col) {
   if (gameOver || board[row][col].flagged || board[row][col].revealed) return;
 
@@ -128,6 +171,7 @@ function handleCellClick(row, col) {
     gameOver = true;
     revealAll();
     showOverlay('Game Over!');
+    saveGameState(); // Save the state after a loss
     return;
   }
 
@@ -137,8 +181,10 @@ function handleCellClick(row, col) {
 
   checkWin();
   renderBoard();
+  saveGameState(); // Save the state after a click
 }
 
+// Reveal adjacent cells
 function revealAdjacent(row, col) {
   for (let dr = -1; dr <= 1; dr++) {
     for (let dc = -1; dc <= 1; dc++) {
@@ -158,13 +204,16 @@ function revealAdjacent(row, col) {
   }
 }
 
+// Toggle flag on a cell
 function toggleFlag(row, col) {
   if (gameOver || board[row][col].revealed) return;
 
   board[row][col].flagged = !board[row][col].flagged;
   renderBoard();
+  saveGameState(); // Save the state after toggling a flag
 }
 
+// Reveal all cells
 function revealAll() {
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -174,6 +223,7 @@ function revealAll() {
   renderBoard();
 }
 
+// Check for a win
 function checkWin() {
   const nonMineCells = rows * cols - mines;
   let revealedCount = 0;
@@ -189,32 +239,42 @@ function checkWin() {
   if (revealedCount === nonMineCells) {
     gameOver = true;
     showOverlay('You Win!');
+    saveGameState(); // Save the state after a win
   }
 }
 
+// Show overlay with a message
 function showOverlay(message) {
   overlay.textContent = message;
   overlay.style.display = 'flex'; // Show the overlay
 }
 
+// Hide overlay
 function hideOverlay() {
   overlay.style.display = 'none'; // Hide the overlay
 }
 
+// Event listeners
 gameSizeButton.addEventListener('click', () => {
   currentSizeIndex = (currentSizeIndex + 1) % gameSizes.length;
   firstClick = true;
   gameOver = false;
-  createBoard();
-  // Update the text on the button to reflect the new game size
-  const size = gameSizes[currentSizeIndex];
-  gameSizeButton.textContent = `${size.rows}x${size.cols}`;
+  chrome.storage.local.remove('gameState', () => {
+    console.log('Game state cleared.');
+    createBoard();
+    const size = gameSizes[currentSizeIndex];
+    gameSizeButton.textContent = `${size.rows}x${size.cols}`;
+  });
 });
 
 restartButton.addEventListener('click', () => {
   firstClick = true;
   gameOver = false;
-  createBoard();
+  chrome.storage.local.remove('gameState', () => {
+    console.log('Game state cleared.');
+    createBoard();
+  });
 });
 
-createBoard();
+// Initialize the game
+loadGameState();
