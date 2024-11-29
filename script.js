@@ -44,6 +44,11 @@ function loadGameState() {
       firstClick = savedState.firstClick;
       gameOver = savedState.gameOver;
       currentSizeIndex = savedState.currentSizeIndex;
+
+      // Update the game size button text
+      const size = gameSizes[currentSizeIndex];
+      gameSizeButton.textContent = `${size.rows}x${size.cols}`;
+
       renderBoard();
       console.log('Game state loaded.');
     } else {
