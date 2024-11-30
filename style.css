@@ -1,120 +1,134 @@
 * {
-    font-family: "Caveat Brush", cursive;
-    font-weight: 400;
-    font-style: normal;
+  font-family: "Caveat Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
 }
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 20px;
-  background-color: #f9f9f9;
-  width: 400px;
-  height: 520px;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+font-family: Arial, sans-serif;
+text-align: center;
+margin: 0;
+padding: 20px;
+background-color: #d9d9d9; /* Moderately dark background */
+color: #333333; /* Dark text color */
+width: 400px;
+height: 520px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
 }
 h1 {
-  margin: 0;
-  padding: 10px;
+margin: 0;
+padding: 10px;
+color: #2c3e50; /* Dark blue */
 }
 .static {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
 }
 .controls-container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .options {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 .black {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  aspect-ratio: 1;
-  width: 98%;
-  background-color: #333;
-  border-radius: 10px;
-  position: relative; /* Needed for positioning the overlay */
+display: flex;
+justify-content: center;
+align-items: center;
+aspect-ratio: 1;
+width: 98%;
+background-color: #cccccc; /* White background */
+border: 1px solid #dddddd; /* Light border */
+border-radius: 10px;
+position: relative; /* Needed for positioning the overlay */
 }
 .board {
-  aspect-ratio: 1;
-  width: 98%;
-  display: grid;
-  border-radius: 10px;
-  overflow: hidden;
+aspect-ratio: 1;
+width: 98%;
+display: grid;
+border-radius: 10px;
+overflow: hidden;
 }
 .cell {
-  aspect-ratio: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #ccc;
-  border: 1px solid #555;
-  font-weight: bold;
-  cursor: pointer;
-  user-select: none;
+aspect-ratio: 1;
+display: flex;
+justify-content: center;
+align-items: center;
+background-color: #e0e0e0; /* Slightly darker light cells */
+border: 1px solid #cccccc; /* Light gray border */
+font-weight: bold;
+cursor: pointer;
+user-select: none;
 }
 .cell:not(.revealed, .mine, .flag):hover {
-  background-color: #aaa;
+background-color: #dcdcdc; /* Darker gray */
 }
 .cell-small {
-    font-size: 14px;
+  font-size: 14px;
 }
 .cell-medium {
-    font-size: 12px;
+  font-size: 12px;
 }
 .cell-big {
-    font-size: 8px;
+  font-size: 8px;
 }
 .cell.revealed {
-  background-color: #eee;
-  cursor: default;
+background-color: #f0f0f0; /* Very light gray */
+cursor: default;
 }
 .cell.mine {
-  background-color: red;
-  color: white;
+background-color: #e74c3c; /* Red */
+color: white;
 }
 .cell.flag {
-  background-color: yellow;
+background-color: #f1c40f; /* Yellow */
+color: black; /* Dark text for contrast */
 }
 .controls {
-  margin-bottom: 20px;
+margin-bottom: 20px;
 }
 button {
-  padding: 10px 15px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  background: none;
-  color: inherit;
-  text-align: center;
+padding: 10px 15px;
+font-size: 16px;
+cursor: pointer;
+border: none;
+background: #2ecc71; /* Green */
+color: white;
+text-align: center;
+border-radius: 5px;
+transition: background-color 0.3s;
+}
+button:hover {
+background: #27ae60; /* Darker green */
 }
 .game-size-btn {
-  font-weight: bold;
+font-weight: bold;
 }
 /* Transparent message overlay */
 .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Transparent dark background */
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  border-radius: 10px;
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+display: none;
+justify-content: center;
+align-items: center;
+background-color: rgba(240, 240, 240, 0.8); /* Moderately dark transparent background */
+color: #2c3e50; /* Dark text */
+font-size: 24px;
+font-weight: bold;
+border-radius: 10px;
+}
+
+.static img {
+  width: 30px; /* Adjusted to align with adjacent elements */
+  height: 30px;
+  padding: 10px;
 }
